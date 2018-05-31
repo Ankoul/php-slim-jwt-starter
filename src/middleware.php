@@ -1,40 +1,29 @@
 <?php
-// Application middleware
+require_once __DIR__ . '/services/AuthService.php';
 
-// e.g: $app->add(new \Slim\Csrf\Guard);
-
+use com\school\api\services\AuthService;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Tuupola\Middleware\HttpBasicAuthentication;
 
 
+$rotating = new RotatingFileHandler(__DIR__ . "/../logs/app.log", 0, Logger::DEBUG);
+$logger = new Logger("slim");
+$logger->pushHandler($rotating);
+
 /**
- * Auth básica HTTP
+ * Basic Auth https://github.com/tuupola/slim-basic-auth
  */
 $app->add(new HttpBasicAuthentication([
-    /**
-     * Usuários existentes
-     */
-    "users" => [
-        "root" => "toor"
-    ],
-    /**
-     * Blacklist - Deixa todas liberadas e só protege as dentro do array
-     */
     "path" => ["/auth"],
-    /**
-     * Whitelist - Protege todas as rotas e só libera as de dentro do array
-     */
-    //"passthrough" => ["/auth/liberada", "/admin/ping"],
+    "realm" => "Protected",
+    "authenticator" => new AuthService($logger)
 ]));
 
 
 /**
- * Auth JWT https://github.com/tuupola/slim-jwt-auth/
+ * JWT Auth https://github.com/tuupola/slim-jwt-auth/
  */
-$rotating = new RotatingFileHandler(__DIR__ . "/../logs/app.log", 0, Logger::DEBUG);
-$logger = new Logger("slim");
-$logger->pushHandler($rotating);
 $config = parse_ini_file(__DIR__."/../config/config.ini");
 $app->add(new Tuupola\Middleware\JwtAuthentication([
     "regexp" => "/(.*)/",
