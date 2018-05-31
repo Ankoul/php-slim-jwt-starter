@@ -17,7 +17,7 @@ $logger->pushHandler($rotating);
 $app->add(new HttpBasicAuthentication([
     "path" => ["/auth"],
     "realm" => "Protected",
-    "authenticator" => new AuthService($logger)
+    "authenticator" => new AuthService($app->getContainer())
 ]));
 
 
