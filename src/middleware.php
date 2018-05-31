@@ -28,10 +28,13 @@ $app->add(new HttpBasicAuthentication([
     //"passthrough" => ["/auth/liberada", "/admin/ping"],
 ]));
 
+
+/**
+ * Auth JWT https://github.com/tuupola/slim-jwt-auth/
+ */
 $rotating = new RotatingFileHandler(__DIR__ . "/../logs/app.log", 0, Logger::DEBUG);
 $logger = new Logger("slim");
 $logger->pushHandler($rotating);
-
 $config = parse_ini_file(__DIR__."/../config/config.ini");
 $app->add(new Tuupola\Middleware\JwtAuthentication([
     "regexp" => "/(.*)/",
