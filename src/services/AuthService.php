@@ -29,22 +29,21 @@ class AuthService {
         $this->container->logger->info("Trying to authenticate " . $credentials['user']);
 
         $user = $this->PDO->login($credentials);
-        if ($user) {
-            $server["PHP_AUTH_USER"] = $user;
-        }
-        return !!$user;
+        return !!$user && $user->email === $credentials['user'];
     }
 
     public function jwtAuth(Request $request, Response $response) {
         $config = parse_ini_file(__DIR__ . "/../../config/config.ini");
 
+        $server = $request->getServerParams();
+        $user = $this->PDO->getUserForToken($server["PHP_AUTH_USER"]);
+
         $now = new DateTime();
         $future = new DateTime("+30 minutes");
-        $server = $request->getServerParams();
         $payload = [
             "iat" => $now->getTimeStamp(),
             "exp" => $future->getTimeStamp(),
-            "sub" => $server["PHP_AUTH_USER"]
+            "sub" => $user
         ];
         $jwt = JWT::encode($payload, $config['JWT_SECRET'], $config['JWT_ALGORITHM']);
         $data["token"] = $jwt;

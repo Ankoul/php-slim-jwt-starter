@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/Permission.php';
+
+use com\school\api\Permission;
 use com\school\api\services\AuthService;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -14,4 +17,4 @@ $app->get('/api/[{name}]', function (Request $request, Response $response, array
 
     // Render index view
     return $this->renderer->render($response, 'index.phtml', $args);
-});
+})->add(Permission::class . ':needAdmin');

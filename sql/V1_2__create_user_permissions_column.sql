@@ -1,0 +1,2 @@
+
+ALTER TABLE user ADD COLUMN permissions INT(4) DEFAULT 0;
