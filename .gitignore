@@ -1,5 +1,8 @@
 /vendor/
 /logs/*
+/config/
 !/logs/README.md
 .idea/
+
+flyway.conf
 
