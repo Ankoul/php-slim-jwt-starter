@@ -34,9 +34,19 @@ $logger->pushHandler($rotating);
 
 $config = parse_ini_file(__DIR__."/../config/config.ini");
 $app->add(new Tuupola\Middleware\JwtAuthentication([
+//    "path" => "/api", /* path to authenticate or array ["/api", "/admin"] */
+//    "passthrough" => ["/auth"], /* path to NOT authenticate or array ["/auth", "/token"] */
     "regexp" => "/(.*)/",
-    "path" => "/api", /* path to authenticate or array ["/api", "/admin"] */
     "logger" => $logger,
     "secret" => $config['JWT_SECRET'],
-    "algorithm" => $config['JWT_ALGORITHM'] /* or ["HS256", "HS384"] */
+    "algorithm" => $config['JWT_ALGORITHM'], /* or ["HS256", "HS384"] */
+    "rules" => [
+        new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
+            "path" => "/api", /* path to authenticate or array ["/api", "/admin"] */
+            "ignore" => ["/auth"] /* path to NOT authenticate  */
+        ]),
+        new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
+            "ignore" => ["OPTIONS"] /* Method to NOT authenticate */
+        ])
+    ]
 ]));
