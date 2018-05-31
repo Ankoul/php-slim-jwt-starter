@@ -1,8 +1,10 @@
+
 /vendor/
 /logs/*
-/config/
-!/logs/README.md
+config/
 .idea/
 
 flyway.conf
 
+!/logs/README.md
+!*/dev.config.ini
