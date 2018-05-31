@@ -31,7 +31,7 @@ $app->get('/auth', function (Request $request, Response $response) use ($app) {
 
 $app->get('/api/[{name}]', function (Request $request, Response $response, array $args) {
     // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
+    $this->logger->info("Slim-Skeleton '/' route " . $args['name']);
 
     // Render index view
     return $this->renderer->render($response, 'index.phtml', $args);
