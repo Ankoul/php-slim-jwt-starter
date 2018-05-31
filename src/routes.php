@@ -14,7 +14,7 @@ $app->get('/auth', function (Request $request, Response $response) use ($app) {
     $config = parse_ini_file(__DIR__."/../config/config.ini");
 
     $now = new DateTime();
-    $future = new DateTime("+1 minutes");
+    $future = new DateTime("+30 minutes");
     $server = $request->getServerParams();
     $payload = [
         "iat" => $now->getTimeStamp(),
@@ -29,7 +29,7 @@ $app->get('/auth', function (Request $request, Response $response) use ($app) {
 });
 
 
-$app->get('/[{name}]', function (Request $request, Response $response, array $args) {
+$app->get('/api/[{name}]', function (Request $request, Response $response, array $args) {
     // Sample log message
     $this->logger->info("Slim-Skeleton '/' route");
 

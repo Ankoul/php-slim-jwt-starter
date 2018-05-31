@@ -22,3 +22,12 @@ $app->add(new \Tuupola\Middleware\HttpBasicAuthentication([
      */
     //"passthrough" => ["/auth/liberada", "/admin/ping"],
 ]));
+
+
+$config = parse_ini_file(__DIR__."/../config/config.ini");
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+    "regexp" => "/(.*)/",
+    "path" => "/api", /* or ["/api", "/admin"] */
+    "secret" => $config['JWT_SECRET'],
+    "algorithm" => $config['JWT_ALGORITHM'] /* or ["HS256", "HS384"] */
+]));
