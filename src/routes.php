@@ -2,6 +2,7 @@
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Firebase\JWT\JWT;
 
 // Routes
 
@@ -10,7 +11,20 @@ use Slim\Http\Response;
  * HTTP Auth - Autenticação minimalista para retornar um JWT
  */
 $app->get('/auth', function (Request $request, Response $response) use ($app) {
-    return $response->withJson(["status" => "Autenticado!"], 200)
+    $config = parse_ini_file(__DIR__."/../config/config.ini");
+
+    $now = new DateTime();
+    $future = new DateTime("+1 minutes");
+    $server = $request->getServerParams();
+    $payload = [
+        "iat" => $now->getTimeStamp(),
+        "exp" => $future->getTimeStamp(),
+        "sub" => $server["PHP_AUTH_USER"]
+    ];
+    $jwt = JWT::encode($payload, $config['JWT_SECRET'], $config['JWT_ALGORITHM']);
+    $data["token"] = $jwt;
+    $data["expires"] = $future->getTimeStamp();
+    return $response->withJson($data, 201)
         ->withHeader('Content-type', 'application/json');
 });
 
